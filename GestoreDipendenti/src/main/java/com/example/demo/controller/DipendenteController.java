@@ -54,4 +54,10 @@ public class DipendenteController {
 		}
 	}
 	
+	@PutMapping("/inserisciListaSkillAdUnDipendente")
+	public void inserisciListaSkillAdUnDipendente(@RequestParam long idDipendente, @RequestParam long[] idSkill, @RequestParam String[] livelli) {
+		if(isAdminOrUser().equals(ADMIN)) {
+			dipendenteService.inserisciListaSkillAdUnDipendente(idDipendente, idSkill, livelli);
+		}
+	}
 }

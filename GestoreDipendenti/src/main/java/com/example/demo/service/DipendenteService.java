@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +69,32 @@ public class DipendenteService {
 //		dipendenteRepository.save(dipendente);
 //		skillRepository.save(skill);
 	
+	}
+
+	public void inserisciListaSkillAdUnDipendente(long idDipendente, long[] idSkill, String[] livelli) {
+		Dipendente dipendente = dipendenteRepository.getReferenceById(idDipendente);
+		List<DipendentiSkill> listaDipendentiSkill = new ArrayList<>();
+		List<ChiaveComposta> keys = new ArrayList<>();
+		List<Skill> listaSkill = new ArrayList<>();
+		for (long sk : idSkill) {
+			Skill skill = new Skill();
+			skill = skillRepository.getReferenceById(sk);
+			listaSkill.add(skill);
+		}
+		listaSkill.forEach(s->{
+			ChiaveComposta key = new ChiaveComposta();
+			key.setIdDipendente(idDipendente);
+			key.setIdSkill(s.getId());
+			keys.add(key);
+		});
+		for (int i = 0; i < idSkill.length; i++) {
+			DipendentiSkill dipendentiSkill = new DipendentiSkill();
+			dipendentiSkill.setDipendente(dipendente);
+			dipendentiSkill.setSkill(listaSkill.get(i));
+			dipendentiSkill.setLivello(livelli[i]);
+			dipendentiSkill.setId(keys.get(i));
+			listaDipendentiSkill.add(dipendentiSkill);
+		}
+		dipendentiSkillRepository.saveAll(listaDipendentiSkill);
 	}
 }

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 29, 2024 alle 17:54
--- Versione del server: 10.4.27-MariaDB
--- Versione PHP: 8.2.0
+-- Creato il: Mar 01, 2024 alle 00:28
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -61,7 +61,9 @@ CREATE TABLE `dipendenti_skill` (
 
 INSERT INTO `dipendenti_skill` (`livello`, `id_dipendente`, `id_skill`) VALUES
 ('Avanzato', 1, 1),
-('Avanzato', 2, 2);
+('Principiante', 2, 1),
+('Intermedio', 2, 2),
+('Avanzato', 2, 3);
 
 -- --------------------------------------------------------
 

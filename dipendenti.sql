@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 01, 2024 alle 00:28
--- Versione del server: 10.4.32-MariaDB
--- Versione PHP: 8.2.12
+-- Creato il: Mar 01, 2024 alle 17:42
+-- Versione del server: 10.4.27-MariaDB
+-- Versione PHP: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -40,8 +40,11 @@ CREATE TABLE `dipendente` (
 --
 
 INSERT INTO `dipendente` (`id`, `email`, `password`, `username`, `id_ruolo`) VALUES
-(1, 'francesco@mail.com', 'Password1!', 'francesco', 1),
-(2, 'christian@mail.com', 'Password1!', 'christian', 2);
+(1, 'francesco@mail.com', 'Password1!', 'Francesco', 1),
+(3, 'salvatore@mail.com', 'Password1!', 'Salvatore', 2),
+(4, 'pasquale@mail.com', 'Password1!', 'Pasquale', 2),
+(5, 'christian@mail.com', 'Password1!', 'Christian', 1),
+(6, 'alessio@mail.com', 'Password1!', 'Alessio', 2);
 
 -- --------------------------------------------------------
 
@@ -61,9 +64,17 @@ CREATE TABLE `dipendenti_skill` (
 
 INSERT INTO `dipendenti_skill` (`livello`, `id_dipendente`, `id_skill`) VALUES
 ('Avanzato', 1, 1),
-('Principiante', 2, 1),
-('Intermedio', 2, 2),
-('Avanzato', 2, 3);
+('Avanzato', 3, 2),
+('Avanzato', 3, 3),
+('Intermedio', 3, 4),
+('Avanzato', 3, 5),
+('Avanzato', 5, 1),
+('Intermedio', 5, 3),
+('Avanzato', 5, 5),
+('Avanzato', 6, 1),
+('Intermedio', 6, 3),
+('Intermedio', 6, 4),
+('Avanzato', 6, 5);
 
 -- --------------------------------------------------------
 
@@ -104,7 +115,8 @@ INSERT INTO `skill` (`id`, `competenza`) VALUES
 (2, 'CSS'),
 (3, 'JAVA'),
 (4, 'JAVASCRIPT'),
-(5, 'SQL');
+(5, 'SQL'),
+(6, 'TYPESCRIPT');
 
 --
 -- Indici per le tabelle scaricate
@@ -144,7 +156,7 @@ ALTER TABLE `skill`
 -- AUTO_INCREMENT per la tabella `dipendente`
 --
 ALTER TABLE `dipendente`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT per la tabella `ruolo`
@@ -156,7 +168,7 @@ ALTER TABLE `ruolo`
 -- AUTO_INCREMENT per la tabella `skill`
 --
 ALTER TABLE `skill`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Limiti per le tabelle scaricate

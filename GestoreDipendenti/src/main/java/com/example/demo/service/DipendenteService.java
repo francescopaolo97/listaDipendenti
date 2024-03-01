@@ -1,10 +1,10 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.ChiaveComposta;
@@ -13,6 +13,7 @@ import com.example.demo.model.DipendentiSkill;
 import com.example.demo.model.Skill;
 import com.example.demo.repository.DipendenteRepository;
 import com.example.demo.repository.DipendentiSkillRepository;
+import com.example.demo.repository.RuoloRepository;
 import com.example.demo.repository.SkillRepository;
 
 @Service
@@ -24,6 +25,13 @@ public class DipendenteService {
 	private SkillRepository skillRepository;
 	@Autowired
 	private DipendentiSkillRepository dipendentiSkillRepository;
+	@Autowired
+	private RuoloRepository ruoloRepository;
+
+	@Value("${user}")
+	private String USER;
+	@Value("{admin}")
+	private String ADMIN;
 
 	private Dipendente dipendenteSessione;
 
@@ -35,7 +43,7 @@ public class DipendenteService {
 	public void setDipendenteSessione(Dipendente dipendenteSessione) {
 		this.dipendenteSessione = dipendenteSessione;
 	}
-	
+
 	public String effettuaLogin(String email, String password) {
 		Dipendente d = dipendenteRepository.findByEmailAndPassword(email, password);
 		if(d != null) {
@@ -48,53 +56,48 @@ public class DipendenteService {
 		}
 	}
 
-	public List<Dipendente> visualizzaListaDipendenti() {
-		return dipendenteRepository.findAll();
+	public List<Dipendente> getDipendenteSessioneNellaLista() {
+		List<Dipendente> lista = new ArrayList<>();
+		lista.add(getDipendenteSessione());
+		return lista;
 	}
 
-	public void inserisciSkillAdUnDipendente(long idDipendente, long idSkill, String livello) {
-		Dipendente dipendente = dipendenteRepository.getReferenceById(idDipendente);
-		Skill skill = skillRepository.getReferenceById(idSkill);
-		DipendentiSkill dipendentiSkill = new DipendentiSkill();
+	public void inserisciCompetenze(Dipendente dipendenteSessioneNow, long idSkill, String livello) {
+		DipendentiSkill ds = new DipendentiSkill();
 		ChiaveComposta key = new ChiaveComposta();
-		key.setIdDipendente(idDipendente);
+		Skill skill = skillRepository.getReferenceById(idSkill);
+		key.setIdDipendente(dipendenteSessioneNow.getId());
 		key.setIdSkill(idSkill);
-		dipendentiSkill.setDipendente(dipendente);
-		dipendentiSkill.setId(key);
-		dipendentiSkill.setSkill(skill);
-		dipendentiSkill.setLivello(livello);
-		dipendentiSkillRepository.save(dipendentiSkill);
-//		dipendente.getListaDipendentiSkill().add(dipendentiSkill);
-//		skill.getListaDipendentiSkill().add(dipendentiSkill);
-//		dipendenteRepository.save(dipendente);
-//		skillRepository.save(skill);
-	
+		ds.setDipendente(dipendenteSessioneNow);
+		ds.setLivello(livello);
+		ds.setSkill(skill);
+		ds.setId(key);
+		dipendentiSkillRepository.save(ds);
+		dipendenteSessioneNow.getListaDipendentiSkill().add(ds);
+		dipendenteRepository.save(dipendenteSessioneNow);
 	}
 
-	public void inserisciListaSkillAdUnDipendente(long idDipendente, long[] idSkill, String[] livelli) {
-		Dipendente dipendente = dipendenteRepository.getReferenceById(idDipendente);
-		List<DipendentiSkill> listaDipendentiSkill = new ArrayList<>();
-		List<ChiaveComposta> keys = new ArrayList<>();
-		List<Skill> listaSkill = new ArrayList<>();
-		for (long sk : idSkill) {
-			Skill skill = new Skill();
-			skill = skillRepository.getReferenceById(sk);
-			listaSkill.add(skill);
+	public void modificaAnagrafica(Dipendente dipendenteSessioneNow, Dipendente dipendente) {
+		dipendenteSessioneNow.setEmail(dipendente.getEmail());
+		dipendenteSessioneNow.setPassword(dipendente.getPassword());
+		dipendenteSessioneNow.setUsername(dipendente.getUsername());
+		dipendenteRepository.save(dipendenteSessioneNow);
+	}
+
+	public String inserisciDipendente(Dipendente dipendente, long idRuolo) {
+		dipendente.setRuolo(ruoloRepository.getReferenceById(idRuolo));
+		//dipendente.setPassword(PasswordUtils.hashPassword(dipendente.getPassword()));
+		dipendenteRepository.save(dipendente);
+		return dipendente.getUsername() + " è stato aggiunto correttamente al Database";
+	}
+
+	public String effettuaLogout() {
+		if(getDipendenteSessione() == null) {
+			return "Nessun dipendente è attualmente loggato. Effettua il login per accedere alle vari funzionalità";
+		}else {
+			setDipendenteSessione(null);
+			return "Logout effettuato con successo. Effettua nuovamente il login per accedere alle vari funzionalità";
 		}
-		listaSkill.forEach(s->{
-			ChiaveComposta key = new ChiaveComposta();
-			key.setIdDipendente(idDipendente);
-			key.setIdSkill(s.getId());
-			keys.add(key);
-		});
-		for (int i = 0; i < idSkill.length; i++) {
-			DipendentiSkill dipendentiSkill = new DipendentiSkill();
-			dipendentiSkill.setDipendente(dipendente);
-			dipendentiSkill.setSkill(listaSkill.get(i));
-			dipendentiSkill.setLivello(livelli[i]);
-			dipendentiSkill.setId(keys.get(i));
-			listaDipendentiSkill.add(dipendentiSkill);
-		}
-		dipendentiSkillRepository.saveAll(listaDipendentiSkill);
+
 	}
 }

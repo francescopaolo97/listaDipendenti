@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,7 @@ public class Dipendente {
 	private String password;
 	
 	@Fetch(FetchMode.JOIN)
-	@OneToMany(mappedBy = "dipendente")
+	@OneToMany(mappedBy = "dipendente", cascade = CascadeType.ALL)
 	private List<DipendentiSkill> listaDipendentiSkill;
 	
 	@ManyToOne
